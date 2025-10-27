@@ -242,9 +242,9 @@ userRouter.post("/verify-otp", async (req: Request, res: Response) => {
     }
 })
 
-userRouter.patch("/create-password/:id", async (req: Request, res: Response) => {
+userRouter.patch("/create-password/:email", async (req: Request, res: Response) => {
     try {
-        const id = req.params.id;
+        const email = req.params.email;
         const { newPassword } = req.body;
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
@@ -255,7 +255,7 @@ userRouter.patch("/create-password/:id", async (req: Request, res: Response) => 
                 }
             }
 
-            const result = await User.findByIdAndUpdate(id, updatedDoc, { new: true })
+            const result = await User.findOneAndUpdate({email}, updatedDoc, { new: true })
 
             res.status(201).json({
                 success: true,
