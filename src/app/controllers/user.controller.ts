@@ -104,15 +104,16 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     if (compairPassword) {
         const token = jwt.sign({ id: userId, email: userExists.email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax"
-        })
+        // res.cookie('token', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === "production",
+        //     sameSite: "lax"
+        // })
 
         res.status(201).json({
             success: true,
-            user: userExists
+            user: userExists,
+            token
         })
     } else {
         res.json({
