@@ -1,7 +1,13 @@
 import express, {Application, Request, Response} from "express";
 import userRouter from "./controllers/user.controller";
+import cors from 'cors';
 
 const app : Application = express();
+
+app.use(cors({
+    origin : "http://localhost:5173",
+    credentials : true
+}))
 
 app.use(express.json());
 app.use("/auth", userRouter);
