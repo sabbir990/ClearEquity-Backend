@@ -37,16 +37,17 @@ userRouter.post("/register", async (req: Request, res: Response) => {
             const token = jwt.sign({ id: result._id, email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
             // Save cookies
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax"
-            })
+            // res.cookie('token', token, {
+            //     httpOnly: true,
+            //     secure: process.env.NODE_ENV === "production",
+            //     sameSite: "lax"
+            // })
 
             res.status(201).json({
                 success: true,
                 message: "User created successfully!",
-                user: result
+                user: result,
+                token
             })
         }
 
