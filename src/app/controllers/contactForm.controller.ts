@@ -12,7 +12,7 @@ contactRouter.post("/send-message", async (req: Request, res: Response) => {
     const { firstName, lastName, email, phone, subject, message } = req.body;
 
     if (!email) {
-        res.json({
+        return res.json({
             success: true,
             message: "Make sure to enter your email! It's required!"
         })
@@ -23,7 +23,7 @@ contactRouter.post("/send-message", async (req: Request, res: Response) => {
     })
 
     if (!result) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Something went wrong while saving the data!"
         })
