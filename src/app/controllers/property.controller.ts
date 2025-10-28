@@ -2,12 +2,39 @@ import express, { Request, Response } from "express";
 import Property from "../models/propertyDetails.model";
 import OwnerAutomatomations from "../models/ownerAutomation.model";
 import { sendEmail } from "../utils/sendMail.util";
+import qs from "qs";
 
 export const propertyOperationRouter = express.Router();
 
+
+
 propertyOperationRouter.get("/", async (req: Request, res: Response) => {
-  res.send("Property operation is now in development mode!")
-})
+  try {
+    const queryString = req.originalUrl.split("?")[1] || "";
+
+    const queryObj = qs.parse(queryString);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, match => `$${match}`);
+
+    const filter = JSON.parse(queryStr);
+
+    const result = await Property.find(filter);
+
+    res.status(200).json({
+      success: true,
+      message: "Properties retrieved successfully!",
+      properties: result,
+    });
+    
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong!",
+      error: err,
+    });
+  }
+});
 
 propertyOperationRouter.post("/add-property", async (req: Request, res: Response) => {
   const propertyDetailsObject = req.body;
