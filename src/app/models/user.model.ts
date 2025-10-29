@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema<User>({
     email : {type : String, required : [true, "Email is a required field!"], unique : [true, "Email already exists! Do you want to login instead?"], trim : true},
     password : {type : String, required : [true, "Password is a required field!"], trim : true},
     role : {type : String, required : true, default : "buyer"},
-    createdAt : {type : Date, default : Date.now()}
-})
+    lastLoggedIn : {type : Date, default : Date.now()}
+}, {timestamps : true})
 
 const User = mongoose.model("User", userSchema);
 

@@ -3,6 +3,7 @@ import Property from "../models/propertyDetails.model";
 import OwnerAutomatomations from "../models/ownerAutomation.model";
 import { sendEmail } from "../utils/sendMail.util";
 import qs from "qs";
+import propertyOffer from "../models/propertyOffer.model";
 
 export const propertyOperationRouter = express.Router();
 
@@ -26,7 +27,7 @@ propertyOperationRouter.get("/", async (req: Request, res: Response) => {
       message: "Properties retrieved successfully!",
       properties: result,
     });
-    
+
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -55,8 +56,9 @@ propertyOperationRouter.post("/add-property", async (req: Request, res: Response
   })
 })
 
-propertyOperationRouter.post("/contact-owner", async (req: Request, res: Response) => {
-  const { propertyID, name, email, phone, message } = req.body;
+propertyOperationRouter.post("/contact-owner/:propertyID", async (req: Request, res: Response) => {
+  const propertyID = req.params.propertyID;
+  const { propertyStatus, name, email, phone, message } = req.body;
 
   if (!propertyID || !name || !email || !message) {
     return res.json({
@@ -72,6 +74,8 @@ propertyOperationRouter.post("/contact-owner", async (req: Request, res: Respons
   const automationObjectForSave = {
     ownerEmail,
     senderEmail: email,
+    propertyID: propertyID,
+    propertyStatus: propertyStatus,
     automation: {
       name,
       email,
@@ -263,3 +267,60 @@ propertyOperationRouter.get("/:id", async (req: Request, res: Response) => {
     property: result
   })
 })
+
+propertyOperationRouter.patch("/sell-property/:id", async (req: Request, res: Response) => {
+
+})
+
+propertyOperationRouter.patch("/approve-property/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const updatedDoc = {
+      $set: {
+        propertyAccepted: true
+      }
+    }
+
+    const result = await Property.findByIdAndUpdate(id, updatedDoc);
+
+    res.status(200).json({
+      success: true,
+      message: "Property is successfully accepted!",
+      result
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong!",
+      error: err,
+    });
+  }
+})
+
+propertyOperationRouter.post("/send-offer/:id", async (req: Request, res: Response) => {
+  try{
+    const id = req.params.id;
+    const {email} = req.body;
+    const selectedProperty = await Property.findById(id);
+    const offerObj = {
+      ...selectedProperty?.toObject(), offeredTo : email
+    }
+
+    const result = await propertyOffer.insertOne(offerObj);
+
+    res.json({
+      success : true,
+      message : "Offer has been sent successfully!",
+      result
+    })
+  }catch(err){
+    res.json({
+      success : false,
+      message : "Something went wrong!",
+      error : err
+    })
+
+    console.log(err)
+  }
+})
+

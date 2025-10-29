@@ -4,6 +4,8 @@ import { OwnerAutomation } from "../interfaces/ownerAutomation.interface";
 const ownerAutomationSchema = new mongoose.Schema<OwnerAutomation>({
     ownerEmail : {type : String, required : [true, "Owner's email is required!"], trim : true, lowercase : true},
     senderEmail : {type : String, required : [true, "Sender's email is required!"], trim : true, lowercase : true},
+    propertyID : {type : String, required : true},
+    propertyStatus : {type : String, required : true, lowercase : true},
     automation : {
         name : {type : String, required : [true, "Sender's name is required!"], trim : true},
         email : {type : String, required : [true, "Sender's email is required!"], trim : true, lowercase : true},

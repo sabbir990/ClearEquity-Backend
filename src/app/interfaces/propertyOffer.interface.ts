@@ -1,4 +1,4 @@
-export interface propertyDetails {
+export interface PropertyOffer {
     propertyName : string,
     propertyAddress : string,
     price : number,
@@ -18,5 +18,6 @@ export interface propertyDetails {
         phone : string,
     },
     status : "sale" | "sold out",
-    propertyAccepted : Boolean
+    propertyAccepted : boolean,
+    offeredTo : string
 }

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { propertyDetails } from "../interfaces/propertyDetails.interface";
+import { PropertyOffer } from "../interfaces/propertyOffer.interface";
 
-const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
+const propertyOfferSchema = new mongoose.Schema<PropertyOffer>({
     propertyName : {type : String, required : [true, "Property Name is a required field!"], trim : true},
     propertyAddress : {type : String, required : [true, "Property Address is a required field!"], trim : true},
     propertyImages : {type : [String], required : [true, "Property Images are required!"], default : ["https://img.freepik.com/free-photo/hotel_1127-4031.jpg"]},
@@ -21,9 +21,10 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
         phone : {type : Number, required : [true, "Owner's phone number is required!"]},
     },
     status : {type : String, required : [true, "Property status is required!"], lowercase : true, default : "sale"},
-    propertyAccepted : {type : Boolean, required : true, default : false}
+    propertyAccepted : {type : Boolean, required : true, default : false},
+    offeredTo : {type : String, required : [true, "User's identity is required!"], lowercase : true}
 })
 
-const Property = mongoose.model("Property", propertyDetailsSchema);
+const propertyOffer = mongoose.model("Property Offers", propertyOfferSchema);
 
-export default Property;
+export default propertyOffer;

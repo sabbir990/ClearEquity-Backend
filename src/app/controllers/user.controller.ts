@@ -8,8 +8,26 @@ import nodemailer from "nodemailer";
 
 const userRouter = express.Router();
 
-userRouter.get("/", async (req: Request, res: Response) => {
-    res.send("This authentication part is currently in progerss!");
+userRouter.get("/", async(req: Request, res: Response) => {
+    res.send("This is the authentication route. It's currently in progress!")
+})
+
+userRouter.get("/users", async (req: Request, res: Response) => {
+    try {
+        const result = await User.find();
+
+        res.status(201).json({
+            success: true,
+            message: "All users has been retrived!",
+            users: result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: true,
+            message: "Something went wrong!",
+            error: err
+        })
+    }
 })
 
 userRouter.post("/register", async (req: Request, res: Response) => {
@@ -28,7 +46,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 
         if (hashedPassword) {
             const registerableUserObject = {
-                username, email, password: hashedPassword, createdAt: Date.now(), updatedAt: Date.now()
+                username, email, password: hashedPassword, lastLoggedIn : Date.now()
             }
 
             const result = await User.insertOne(registerableUserObject);
@@ -105,11 +123,14 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     if (compairPassword) {
         const token = jwt.sign({ id: userId, email: userExists.email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === "production",
-        //     sameSite: "lax"
-        // })
+        const filter = {email : email};
+        const updatedDoc = {
+            $set : {
+                lastLoggedIn : Date.now()
+            }
+        }
+
+        await User.findOneAndUpdate(filter, updatedDoc);
 
         res.status(201).json({
             success: true,
@@ -227,7 +248,7 @@ userRouter.post("/verify-otp", async (req: Request, res: Response) => {
             })
         }
 
-        await OTP.deleteOne({otp});
+        await OTP.deleteOne({ otp });
 
         res.status(201).send({
             success: true,
@@ -235,9 +256,9 @@ userRouter.post("/verify-otp", async (req: Request, res: Response) => {
         })
     } catch (err) {
         res.json({
-            success : false,
-            message : "Something went wrong!",
-            error : err
+            success: false,
+            message: "Something went wrong!",
+            error: err
         })
     }
 })
@@ -255,7 +276,7 @@ userRouter.patch("/create-password/:email", async (req: Request, res: Response) 
                 }
             }
 
-            const result = await User.findOneAndUpdate({email}, updatedDoc, { new: true })
+            const result = await User.findOneAndUpdate({ email }, updatedDoc, { new: true })
 
             res.status(201).json({
                 success: true,
