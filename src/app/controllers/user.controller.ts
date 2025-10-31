@@ -5,10 +5,11 @@ import jwt from 'jsonwebtoken';
 import { ObjectId } from "mongodb";
 import OTP from "../models/otp.model";
 import nodemailer from "nodemailer";
+import UserFeedback from "../models/userFeedback.modal";
 
 const userRouter = express.Router();
 
-userRouter.get("/", async(req: Request, res: Response) => {
+userRouter.get("/", async (req: Request, res: Response) => {
     res.send("This is the authentication route. It's currently in progress!")
 })
 
@@ -46,7 +47,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 
         if (hashedPassword) {
             const registerableUserObject = {
-                username, email, password: hashedPassword, lastLoggedIn : Date.now()
+                username, email, password: hashedPassword, lastLoggedIn: Date.now()
             }
 
             const result = await User.insertOne(registerableUserObject);
@@ -123,10 +124,10 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     if (compairPassword) {
         const token = jwt.sign({ id: userId, email: userExists.email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
-        const filter = {email : email};
+        const filter = { email: email };
         const updatedDoc = {
-            $set : {
-                lastLoggedIn : Date.now()
+            $set: {
+                lastLoggedIn: Date.now()
             }
         }
 
@@ -316,6 +317,46 @@ userRouter.patch("/promote-role/:id", async (req: Request, res: Response) => {
             success: false,
             message: "Something went wrong!",
             err
+        })
+    }
+})
+
+userRouter.post("/ask-for-support", async (req: Request, res: Response) => {
+    try {
+        const { email, subject, feedback } = req.body;
+
+        const result = await UserFeedback.insertOne({
+            email, subject, feedback
+        })
+
+        res.json({
+            success: true,
+            message: "Feedback sent to the client!",
+            result
+        })
+    } catch (err) {
+        res.json({
+            success: true,
+            message: "Something went wrong",
+            error: err
+        })
+    }
+})
+
+userRouter.get("/retrieve-feedbacks", async (req: Request, res: Response) => {
+    try {
+        const feedbacks = await UserFeedback.find();
+
+        res.json({
+            success: true,
+            message: "Feedbacks retrived!",
+            feedbacks
+        })
+    } catch (err) {
+        res.json({
+            success: true,
+            message: "Something went wrong",
+            error: err
         })
     }
 })
