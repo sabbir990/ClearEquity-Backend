@@ -410,6 +410,6 @@ userRouter.patch("/change-nda-status/:id", async (req: Request, res: Response) =
     }
 })
 
-userRouter.delete("/delete-")
+// userRouter.delete("/delete-")
 
 export default userRouter;
