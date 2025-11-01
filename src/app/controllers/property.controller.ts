@@ -261,6 +261,14 @@ propertyOperationRouter.get("/:id", async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await Property.findById(id);
 
+  const updatedDoc = {
+    $inc: {
+      views: 1
+    }
+  }
+
+  await Property.findByIdAndUpdate(id, updatedDoc);
+
   res.status(201).send({
     success: true,
     message: "Property found!",
@@ -298,26 +306,26 @@ propertyOperationRouter.patch("/approve-property/:id", async (req: Request, res:
 })
 
 propertyOperationRouter.post("/send-offer/:id", async (req: Request, res: Response) => {
-  try{
+  try {
     const id = req.params.id;
-    const {email} = req.body;
+    const { email } = req.body;
     const selectedProperty = await Property.findById(id);
     const offerObj = {
-      ...selectedProperty?.toObject(), offeredTo : email
+      ...selectedProperty?.toObject(), offeredTo: email
     }
 
     const result = await propertyOffer.insertOne(offerObj);
 
     res.json({
-      success : true,
-      message : "Offer has been sent successfully!",
+      success: true,
+      message: "Offer has been sent successfully!",
       result
     })
-  }catch(err){
+  } catch (err) {
     res.json({
-      success : false,
-      message : "Something went wrong!",
-      error : err
+      success: false,
+      message: "Something went wrong!",
+      error: err
     })
 
     console.log(err)

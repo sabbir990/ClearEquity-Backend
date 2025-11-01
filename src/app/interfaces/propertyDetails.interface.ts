@@ -18,5 +18,6 @@ export interface propertyDetails {
         phone : string,
     },
     status : "sale" | "sold out",
-    propertyAccepted : Boolean
+    propertyAccepted : Boolean,
+    views : number
 }
