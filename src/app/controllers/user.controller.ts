@@ -33,7 +33,7 @@ userRouter.get("/users", async (req: Request, res: Response) => {
 
 userRouter.post("/register", async (req: Request, res: Response) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, NDAStatus } = req.body;
 
         const userExists = await User.findOne({ email: email });
 
@@ -47,7 +47,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 
         if (hashedPassword) {
             const registerableUserObject = {
-                username, email, password: hashedPassword, lastLoggedIn: Date.now()
+                username, email, password: hashedPassword, NDAStatus, lastLoggedIn: Date.now()
             }
 
             const result = await User.insertOne(registerableUserObject);
@@ -357,6 +357,30 @@ userRouter.get("/retrieve-feedbacks", async (req: Request, res: Response) => {
             success: true,
             message: "Something went wrong",
             error: err
+        })
+    }
+})
+
+userRouter.patch("/change-nda-status/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+
+        const updatedDOC = {
+            NDAStatus: true
+        }
+
+        const result = await User.findByIdAndUpdate(id, updatedDOC);
+
+        res.json({
+            success: true,
+            message: "NDA Status has successfully updated!",
+            result
+        })
+    }catch(err){
+        res.json({
+            success : false,
+            message : "Something went wrong",
+            error : err
         })
     }
 })
