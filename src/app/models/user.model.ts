@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema<User>({
     password : {type : String, required : [true, "Password is a required field!"], trim : true},
     NDAStatus : {type : Boolean, default : false},
     role : {type : String, required : true, default : "buyer"},
-    lastLoggedIn : {type : Date, default : Date.now()}
+    lastLoggedIn : {type : Date, default : Date.now()},
+    status : {type : String, required : true, default : "static"}
 }, {timestamps : true})
 
 const User = mongoose.model("User", userSchema);

@@ -4,5 +4,6 @@ export interface User {
     password : string,
     NDAStatus : boolean,
     role: "admin" | "buyer" | "seller",
-    lastLoggedIn : Date
+    lastLoggedIn : Date,
+    status : "static" | "pending"
 }

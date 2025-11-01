@@ -22,7 +22,7 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
     },
     status : {type : String, required : [true, "Property status is required!"], lowercase : true, default : "sale"},
     propertyAccepted : {type : Boolean, required : true, default : false},
-    views : {type : Number, required : true, default : 0}
+    views : {type : Number, required : true, default : 1}
 })
 
 const Property = mongoose.model("Property", propertyDetailsSchema);
