@@ -314,9 +314,9 @@ userRouter.patch("/ask-for-promotion/:id", async (req: Request, res: Response) =
         })
     } catch (err) {
         res.json({
-            success : false,
-            message : "Something went wrong!",
-            error : err
+            success: false,
+            message: "Something went wrong!",
+            error: err
         })
     }
 })
@@ -410,6 +410,29 @@ userRouter.patch("/change-nda-status/:id", async (req: Request, res: Response) =
     }
 })
 
-// userRouter.delete("/delete-")
+userRouter.patch("/reject-promotion-request/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const updateDoc = {
+            $set: {
+                status: "static"
+            }
+        }
+
+        const result = await User.findByIdAndUpdate(id, updateDoc);
+
+        res.json({
+            success: true,
+            message: "Rejected successfully!",
+            result
+        })
+    } catch (err) {
+        res.json({
+            success: false,
+            message: "Something went wrong!",
+            error: err
+        })
+    }
+})
 
 export default userRouter;

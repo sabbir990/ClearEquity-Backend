@@ -19,5 +19,11 @@ export interface propertyDetails {
     },
     status : "sale" | "sold out",
     propertyAccepted : Boolean,
-    views : number
+    views : number,
+    propertyHas : {
+        beds : number,
+        baths : number,
+        kitchen : number,
+        sqrft : number
+    }
 }
