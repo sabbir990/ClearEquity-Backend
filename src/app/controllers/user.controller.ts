@@ -356,7 +356,7 @@ userRouter.post("/ask-for-support", async (req: Request, res: Response) => {
         })
     } catch (err) {
         res.json({
-            success: true,
+            success: false,
             message: "Something went wrong",
             error: err
         })

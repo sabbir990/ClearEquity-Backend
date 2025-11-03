@@ -7,8 +7,6 @@ import propertyOffer from "../models/propertyOffer.model";
 
 export const propertyOperationRouter = express.Router();
 
-
-
 propertyOperationRouter.get("/", async (req: Request, res: Response) => {
   try {
     const queryString = req.originalUrl.split("?")[1] || "";
@@ -351,3 +349,20 @@ propertyOperationRouter.get("/get-all-contacts/:senderEmail", async (req: Reques
   }
 })
 
+propertyOperationRouter.delete("/remove-owner-conversation/:conversationID", async (req: Request, res: Response) => {
+  try {
+    const conversationID = req.params.conversationID;
+    const result = await OwnerAutomatomations.findByIdAndDelete(conversationID);
+    res.json({
+      success: true,
+      message: "Conversation deleted successfully and now it'll be deleted from shortlisted too.",
+      result
+    })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "Something went wrong!",
+      error: err
+    })
+  }
+})
