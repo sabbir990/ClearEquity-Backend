@@ -33,7 +33,7 @@ userRouter.get("/users", async (req: Request, res: Response) => {
 
 userRouter.post("/register", async (req: Request, res: Response) => {
     try {
-        const { username, email, password, NDAStatus, status } = req.body;
+        const { username, email, password, NDAStatus, status, role } = req.body;
 
         const userExists = await User.findOne({ email: email });
 
@@ -53,14 +53,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
             const result = await User.insertOne(registerableUserObject);
 
             // Assign token with user's email
-            const token = jwt.sign({ id: result._id, email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
-
-            // Save cookies
-            // res.cookie('token', token, {
-            //     httpOnly: true,
-            //     secure: process.env.NODE_ENV === "production",
-            //     sameSite: "lax"
-            // })
+            const token = jwt.sign({ id: result._id, email, role }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
             res.status(201).json({
                 success: true,
