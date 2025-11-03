@@ -115,7 +115,9 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     const compairPassword = await bcrypt.compareSync(password, userExists.password);
 
     if (compairPassword) {
-        const token = jwt.sign({ id: userId, email: userExists.email }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+        const userRole = await User.findOne({email});
+        console.log(userRole)
+        const token = jwt.sign({ id: userId, email: userExists.email, role : userRole }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
         const filter = { email: email };
         const updatedDoc = {
