@@ -28,7 +28,8 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
         baths : {type : Number, required : [true, "Bath number is required!"]},
         sqrft : {type : Number, required : [true, "Area sqrft number is required!"]},
         kitchen : {type : Number, required : [true, "Kitchen number is required!"]}
-    }
+    },
+    country : {type : String, required : [true, "Property location country is required!"]}
 })
 
 const Property = mongoose.model("Property", propertyDetailsSchema);

@@ -25,5 +25,6 @@ export interface propertyDetails {
         baths : number,
         kitchen : number,
         sqrft : number
-    }
+    },
+    country : string
 }
