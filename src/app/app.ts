@@ -7,7 +7,7 @@ import { propertyOperationRouter } from "./controllers/property.controller";
 const app : Application = express();
 
 app.use(cors({
-    origin : ["http://localhost:5173", "http://localhost:5174"],
+    origin : ["http://localhost:5173", "http://localhost:5174", "https://clear-equity-git-sabbir-muhammad-sabbir-khan-alifs-projects.vercel.app"],
     credentials : true
 }))
 
