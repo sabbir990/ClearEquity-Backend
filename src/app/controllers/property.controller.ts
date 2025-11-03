@@ -332,3 +332,22 @@ propertyOperationRouter.post("/send-offer/:id", async (req: Request, res: Respon
   }
 })
 
+propertyOperationRouter.get("/get-all-contacts/:senderEmail", async (req: Request, res: Response) => {
+  try {
+    const senderEmail = req.params.senderEmail;
+    const filter = { senderEmail: senderEmail };
+    const result = await OwnerAutomatomations.find(filter);
+    res.json({
+      success: true,
+      message: "All contacts fetched!",
+      result
+    })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "Something went wrong!",
+      error: err
+    })
+  }
+})
+
