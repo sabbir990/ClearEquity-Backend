@@ -5,7 +5,7 @@ const userFeedbackSchema = new mongoose.Schema<userFeedback>({
     email : {type : String, required : true, lowercase : true},
     subject : {type : String, required : true, trim : true },
     feedback : {type : String, required : true, trim : true}
-})
+}, {timestamps : true})
 
 const UserFeedback = mongoose.model("User Feedbacks", userFeedbackSchema);
 
