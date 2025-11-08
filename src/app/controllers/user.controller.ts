@@ -53,7 +53,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
             const result = await User.insertOne(registerableUserObject);
 
             // Assign token with user's email
-            const token = jwt.sign({ id: result._id, email, role }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+            const token = jwt.sign({ id: result._id, email, role, username }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
             res.status(201).json({
                 success: true,
@@ -117,7 +117,7 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     if (compairPassword) {
         const userRole = await User.findOne({email});
         console.log(userRole)
-        const token = jwt.sign({ id: userId, email: userExists.email, role : userRole?.role }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+        const token = jwt.sign({ id: userId, email: userExists.email, role : userRole?.role, username : userExists?.username }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
         const filter = { email: email };
         const updatedDoc = {
