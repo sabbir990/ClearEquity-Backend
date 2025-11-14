@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 import OTP from "../models/otp.model";
 import nodemailer from "nodemailer";
 import UserFeedback from "../models/userFeedback.modal";
+import ReviewModel from "../models/review.model";
 
 const userRouter = express.Router();
 
@@ -115,9 +116,9 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     const compairPassword = await bcrypt.compareSync(password, userExists.password);
 
     if (compairPassword) {
-        const userRole = await User.findOne({email});
+        const userRole = await User.findOne({ email });
         console.log(userRole)
-        const token = jwt.sign({ id: userId, email: userExists.email, role : userRole?.role, username : userExists?.username }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+        const token = jwt.sign({ id: userId, email: userExists.email, role: userRole?.role, username: userExists?.username }, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
         const filter = { email: email };
         const updatedDoc = {
@@ -426,6 +427,64 @@ userRouter.patch("/reject-promotion-request/:id", async (req: Request, res: Resp
             success: false,
             message: "Something went wrong!",
             error: err
+        })
+    }
+})
+
+userRouter.post("/post-review", async (req: Request, res: Response) => {
+    try {
+        const { propertyID, userEmail, review } = req.body;
+        const result = await ReviewModel.insertOne({ propertyID, userEmail, review });
+
+        res.send({
+            success: true,
+            message: "Review is successfully saved in the database!",
+            result
+        })
+    } catch (err) {
+        res.send({
+            success: false,
+            message: "Something went wrong!",
+            error : err
+        })
+    }
+})
+
+userRouter.get("/all-reviews", async (req: Request, res: Response) => {
+    try {
+        
+        const result = await ReviewModel.find();
+
+        res.send({
+            success: true,
+            message: "Review is successfully retrieved!",
+            result
+        })
+    } catch (err) {
+        res.send({
+            success: false,
+            message: "Something went wrong!",
+            error : err
+        })
+    }
+})
+
+userRouter.get("/review/:propertyID", async (req: Request, res: Response) => {
+    try {
+        const propertyID = req.params.propertyID;
+        const filter = {propertyID};
+        const result = await ReviewModel.find(filter);
+
+        res.send({
+            success: true,
+            message: "Review is successfully retrieved!",
+            result
+        })
+    } catch (err) {
+        res.send({
+            success: false,
+            message: "Something went wrong!",
+            error : err
         })
     }
 })
