@@ -461,7 +461,7 @@ userRouter.patch("/reject-promotion-request/:id", async (req: Request, res: Resp
 
 userRouter.post("/post-review", async (req: Request, res: Response) => {
     try {
-        const { propertyID, userEmail, review } = req.body;
+        const { propertyID, userEmail, review, userName } = req.body;
         const result = await ReviewModel.insertOne({ propertyID, userEmail, review });
 
         res.send({
