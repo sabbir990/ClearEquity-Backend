@@ -342,6 +342,31 @@ userRouter.patch("/promote-role/:id", async (req: Request, res: Response) => {
     }
 })
 
+userRouter.patch("/reject-promotion-request/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const updatedDoc = {
+            $set: {
+                role: "buyer"
+            }
+        }
+
+        const result = await User.findByIdAndUpdate(id, updatedDoc, { new: true });
+
+        res.status(201).json({
+            success: true,
+            message: "Request rejected!",
+            result
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong!",
+            err
+        })
+    }
+})
+
 userRouter.post("/ask-for-support", async (req: Request, res: Response) => {
     try {
         const { email, subject, feedback } = req.body;
@@ -445,14 +470,14 @@ userRouter.post("/post-review", async (req: Request, res: Response) => {
         res.send({
             success: false,
             message: "Something went wrong!",
-            error : err
+            error: err
         })
     }
 })
 
 userRouter.get("/all-reviews", async (req: Request, res: Response) => {
     try {
-        
+
         const result = await ReviewModel.find();
 
         res.send({
@@ -464,7 +489,7 @@ userRouter.get("/all-reviews", async (req: Request, res: Response) => {
         res.send({
             success: false,
             message: "Something went wrong!",
-            error : err
+            error: err
         })
     }
 })
@@ -472,7 +497,7 @@ userRouter.get("/all-reviews", async (req: Request, res: Response) => {
 userRouter.get("/review/:propertyID", async (req: Request, res: Response) => {
     try {
         const propertyID = req.params.propertyID;
-        const filter = {propertyID};
+        const filter = { propertyID };
         const result = await ReviewModel.find(filter);
 
         res.send({
@@ -484,7 +509,7 @@ userRouter.get("/review/:propertyID", async (req: Request, res: Response) => {
         res.send({
             success: false,
             message: "Something went wrong!",
-            error : err
+            error: err
         })
     }
 })
