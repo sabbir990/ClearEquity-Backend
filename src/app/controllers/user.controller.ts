@@ -140,7 +140,7 @@ userRouter.post("/login", async (req: Request, res: Response) => {
             message: "Password didn't match!",
         })
     }
-})
+});
 
 userRouter.post("/logout", async (req: Request, res: Response) => {
     try {
