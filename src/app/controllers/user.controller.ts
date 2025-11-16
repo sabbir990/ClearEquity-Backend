@@ -349,7 +349,8 @@ userRouter.patch("/reject-promotion-request/:id", async (req: Request, res: Resp
         const id = req.params.id;
         const updatedDoc = {
             $set: {
-                role: "buyer"
+                role: "buyer",
+                status: "static"
             }
         }
 
