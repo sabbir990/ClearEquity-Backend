@@ -322,8 +322,10 @@ userRouter.patch("/promote-role/:id", async (req: Request, res: Response) => {
         const id = req.params.id;
         const updatedDoc = {
             $set: {
-                role: "seller"
+                role: "seller",
+                status: "static"
             }
+
         }
 
         const result = await User.findByIdAndUpdate(id, updatedDoc, { new: true });
