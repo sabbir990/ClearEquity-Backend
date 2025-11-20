@@ -3,6 +3,7 @@ import userRouter from "./controllers/user.controller";
 import cors from 'cors';
 import { contactRouter } from "./controllers/contactForm.controller";
 import { propertyOperationRouter } from "./controllers/property.controller";
+import { offerRouter } from "./controllers/offer.controller";
 
 const app : Application = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/auth", userRouter);
 app.use("/contact", contactRouter);
 app.use("/property", propertyOperationRouter);
+app.use("/offer", offerRouter);
 
 app.get("/", async( req : Request, res : Response) => {
     res.send("Welcome to ClearQuity!")

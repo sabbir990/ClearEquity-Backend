@@ -366,7 +366,3 @@ propertyOperationRouter.delete("/remove-owner-conversation/:conversationID", asy
     })
   }
 })
-
-// propertyOperationRouter.post("/send-an-offer/:propertyID", async(req: Request, res: Response) => {
-  
-// })
