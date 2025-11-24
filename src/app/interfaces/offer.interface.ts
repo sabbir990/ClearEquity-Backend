@@ -3,7 +3,8 @@ interface Offer{
     offeredPrice: number,
     propertyCurrentPrice: number,
     buyerEmail: string,
-    propertyOwnerEmail: string
+    propertyOwnerEmail: string,
+    status: "pending" | "accepted" | "rejected"
 }
 
 export default Offer;
