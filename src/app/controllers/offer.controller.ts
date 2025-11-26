@@ -163,7 +163,7 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
 
 offerRouter.get("/all-purchases", async (req: Request, res: Response) => {
     try {
-        const allPurchases = await Offers.find();
+        const allPurchases = await purchasedProperties.find();
 
         res.json({
             success: true,
