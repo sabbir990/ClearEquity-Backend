@@ -156,7 +156,25 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
         res.json({
             success: false,
             message: "Something went wrong!",
-            error : err
+            error: err
+        })
+    }
+})
+
+offerRouter.get("/all-purchases", async (req: Request, res: Response) => {
+    try {
+        const allPurchases = await Offers.find();
+
+        res.json({
+            success: true,
+            message: "Purchases all are fetched!",
+            allPurchases
+        })
+    }catch(err){
+        res.json({
+            success: false,
+            message: "Something went wrong!",
+            error: err
         })
     }
 })
