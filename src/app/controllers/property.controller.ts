@@ -54,6 +54,26 @@ propertyOperationRouter.post("/add-property", async (req: Request, res: Response
   })
 })
 
+propertyOperationRouter.delete("/delete-property/:propertyID", async (req: Request, res: Response) => {
+  try {
+    const propertyID = req.params.propertyID;
+    const deletionResult = await Property.findByIdAndDelete(propertyID);
+
+    res.status(201).json({
+      success: true,
+      message: "Property deleted successfully!",
+      result: deletionResult
+    })
+  } catch (err) {
+    res.status(403).json({
+      success: true,
+      message: "Something went wrong!",
+      error: err
+    })
+  }
+
+})
+
 propertyOperationRouter.post("/contact-owner/:propertyID", async (req: Request, res: Response) => {
   const propertyID = req.params.propertyID;
   const { propertyStatus, name, email, phone, message } = req.body;
