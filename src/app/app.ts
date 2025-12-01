@@ -18,7 +18,7 @@ app.use("/auth", userRouter);
 app.use("/contact", contactRouter);
 app.use("/property", propertyOperationRouter);
 app.use("/offer", offerRouter);
-app.use("/cloudinary", cloudinaryRouter);
+// app.use("/cloudinary", cloudinaryRouter);
 
 app.get("/", async( req : Request, res : Response) => {
     res.send("Welcome to ClearQuity!")
