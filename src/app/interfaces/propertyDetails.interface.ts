@@ -24,7 +24,10 @@ export interface propertyDetails {
         beds : number,
         baths : number,
         kitchen : number,
-        sqrft : number
+        sqrft : number,
+        parking : boolean
     },
-    country : string
+    country : string,
+    reno : number,
+    arv : number
 }

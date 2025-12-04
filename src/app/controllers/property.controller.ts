@@ -25,7 +25,6 @@ propertyOperationRouter.get("/", async (req: Request, res: Response) => {
       message: "Properties retrieved successfully!",
       properties: result,
     });
-
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -45,13 +44,16 @@ propertyOperationRouter.post("/add-property", async (req: Request, res: Response
     })
   }
 
-  const result = await Property.insertOne(propertyDetailsObject);
+  const result = await Property.create(propertyDetailsObject);
+
+  // console.log(result);
 
   res.status(201).json({
     success: true,
     message: "Property added successfully!",
     property: result
   })
+
 })
 
 propertyOperationRouter.delete("/delete-property/:propertyID", async (req: Request, res: Response) => {
