@@ -4,7 +4,8 @@ import PurchasedProperty from "../interfaces/purchasedProperty.interface";
 const purchasedPropertySchema : Schema<PurchasedProperty>  = new mongoose.Schema<PurchasedProperty>({
     propertyID: {type: String, required: true, trim: true},
     customerEmail: {type: String, required: true, trim: true, lowercase: true},
-    status: {type: String, required: true, trim: true, lowercase: true, default: "pending"}
+    status: {type: String, required: true, trim: true, lowercase: true, default: "pending"},
+    customerUsername: {type: String, required: true, trim: true}
 })
 
 const purchasedProperties: Model<PurchasedProperty> = mongoose.model<PurchasedProperty>("Purchased Properties", purchasedPropertySchema);

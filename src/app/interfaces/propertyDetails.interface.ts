@@ -25,9 +25,10 @@ export interface propertyDetails {
         baths : number,
         kitchen : number,
         sqrft : number,
-        parking : boolean
+        parking : boolean,
+        features: string[], 
     },
     country : string,
     reno : number,
-    arv : number
+    arv : number,
 }

@@ -2,6 +2,11 @@ import { Request, Response, Router } from "express";
 import Offers from "../models/offer.model";
 import Property from "../models/propertyDetails.model";
 import purchasedProperties from "../models/purchasedProperty.model";
+import { sendEmail } from "../utils/sendMail.util";
+// import userRouter from "./user.controller";
+import User from "../models/user.model";
+import PurchasedProperty from "../interfaces/purchasedProperty.interface";
+import mongoose from "mongoose";
 
 export const offerRouter = Router();
 
@@ -53,7 +58,7 @@ offerRouter.patch("/accept-offer/:offerID", async (req: Request, res: Response) 
 
             const updatedDOC = {
                 $set: {
-                    status: "rented",
+                    status: "sold",
                     propertyOwner: {
                         name: propertyNewOwner.name,
                         designation: propertyNewOwner.designation,
@@ -102,10 +107,28 @@ offerRouter.patch("/reject-offer/:offerID", async (req: Request, res: Response) 
     }
 })
 
+interface NewPropertyOwnerName {
+    _id: mongoose.Types.ObjectId,
+    username: string,
+    email: string,
+    password: string,
+    NDAStatus: string,
+    role: string,
+    lastLoggedIn: Date,
+    status: string,
+    createdAt: Date,
+    updateAt: Date,
+    __v: number
+}
+
 offerRouter.post("/buy-property", async (req: Request, res: Response) => {
     try {
         const boughtPropertyInfo = req.body;
-        const result = await purchasedProperties.insertOne(boughtPropertyInfo);
+        const newPropertyOwnerName = await User.findOne({
+            customerEmail: boughtPropertyInfo?.customerEmail
+        }) as NewPropertyOwnerName | null;
+        console.log(newPropertyOwnerName)
+        const result = await purchasedProperties.insertOne<PurchasedProperty>({ ...boughtPropertyInfo, customerUsername: newPropertyOwnerName?.username });
 
         res.json({
             success: true,
@@ -126,6 +149,8 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
         const purchaseID = req.params.purchaseID;
         const newOwnerInformation = req.body;
 
+        console.log(newOwnerInformation)
+
         const order = await purchasedProperties.findById(purchaseID);
 
         const orderedProperty = await Property.findOne({ _id: order?.propertyID });
@@ -134,7 +159,7 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
 
         const updatedDOC = {
             $set: {
-                status: "rented",
+                status: "sold",
                 propertyOwner: {
                     name: newOwnerInformation.name,
                     designation: newOwnerInformation.designation,
@@ -146,6 +171,54 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
 
         await purchasedProperties.findByIdAndUpdate(purchaseID, { $set: { status: "sold" } });
         const sellingResult = await Property.findByIdAndUpdate(orderedProperty?._id, updatedDOC);
+
+        await sendEmail({
+            to: newOwnerInformation.email || "support@clearquity.com",
+            subject: `The owner of ${orderedProperty?.propertyName} agreed to sell the propertyt to you!`,
+            html: `<div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px;">
+  <div style="max-width: 600px; margin: auto; background: white; border-radius: 10px; padding: 30px; border: 1px solid #e5e5e5;">
+      
+      <h2 style="color: #0a2540; text-align: center; margin-bottom: 20px;">
+          🎉 Congratulations on Your Successful Property Purchase!
+      </h2>
+
+      <p style="font-size: 15px; color: #333;">
+          Hi <strong>{{buyerName}}</strong>,
+      </p>
+
+      <p style="font-size: 15px; color: #333; line-height: 1.6;">
+          We’re excited to inform you that the owner of 
+          <strong>{{propertyName}}</strong> has officially agreed to sell the property to you!
+      </p>
+
+      <p style="font-size: 15px; color: #333; line-height: 1.6;">
+          The property status has now been updated to <strong>Sold</strong>, and our team will guide you through the next steps shortly.  
+      </p>
+
+      <div style="background: #f0f7ff; border-left: 4px solid #0066ff; padding: 12px 16px; margin: 20px 0; border-radius: 6px;">
+          <p style="margin: 0; font-size: 14px; color: #0a2540;">
+              <strong>New Owner Information:</strong><br>
+              Name: {{buyerName}}<br>
+              Email: {{buyerEmail}}<br>
+              Phone: {{buyerPhone}}
+          </p>
+      </div>
+
+      <p style="font-size: 15px; color: #333; line-height: 1.6;">
+          If you have any questions or need assistance, feel free to reach out to us anytime.  
+          We’re here to help you every step of the way.
+      </p>
+
+      <p style="font-size: 15px; color: #333; margin-top: 25px;">
+          Warm regards,<br>
+          <strong>The ClearQuity Team</strong><br>
+          <span style="font-size: 13px; color: #555;">support@clearquity.com</span>
+      </p>
+
+  </div>
+</div>
+`
+        })
 
         res.json({
             success: true,
@@ -170,7 +243,7 @@ offerRouter.get("/all-purchases", async (req: Request, res: Response) => {
             message: "Purchases all are fetched!",
             allPurchases
         })
-    }catch(err){
+    } catch (err) {
         res.json({
             success: false,
             message: "Something went wrong!",

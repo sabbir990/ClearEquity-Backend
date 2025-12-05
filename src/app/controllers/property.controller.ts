@@ -297,7 +297,7 @@ propertyOperationRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 propertyOperationRouter.patch("/sell-property/:id", async (req: Request, res: Response) => {
-
+  
 })
 
 propertyOperationRouter.patch("/approve-property/:id", async (req: Request, res: Response) => {
