@@ -9,7 +9,6 @@ export interface propertyDetails {
     HOAFees : string,
     propertyDescription : string,
     propertyOverviewVideoURL : string,
-    propertyFloorPlanFile : string,
     interestRate : number,
     propertyOwner : {
         name : string,
@@ -26,7 +25,6 @@ export interface propertyDetails {
         kitchen : number,
         sqrft : number,
         parking : boolean,
-        features: string[], 
     },
     country : string,
     reno : number,
