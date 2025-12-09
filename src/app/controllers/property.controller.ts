@@ -73,8 +73,60 @@ propertyOperationRouter.delete("/delete-property/:propertyID", async (req: Reque
       error: err
     })
   }
-
 })
+
+function flattenObject(obj: any, prefix = ""): Record<string, any> {
+  return Object.keys(obj).reduce((acc, k) => {
+    const value = obj[k];
+    const key = prefix ? `${prefix}.${k}` : k;
+
+    if (value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
+      Object.assign(acc, flattenObject(value, key));
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as Record<string, any>);
+}
+
+propertyOperationRouter.patch("/update-property/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const updates = req.body;
+
+    // console.log(updates)
+
+    // Flatten nested objects so only provided fields are updated
+    const flattenedUpdates = flattenObject(updates);
+
+    const result = await Property.findByIdAndUpdate(
+      id,
+      { $set: flattenedUpdates },
+      { new: true } // return updated document
+    );
+
+    if (!result) {
+      return res.status(404).json({ success: false, message: "Property not found" });
+    }
+
+    console.log(result)
+
+    res.status(200).json({
+      success: true,
+      message: "Property updated successfully!",
+      result,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong!",
+      error: err,
+    });
+  }
+});
+
 
 propertyOperationRouter.post("/contact-owner/:propertyID", async (req: Request, res: Response) => {
   const propertyID = req.params.propertyID;
@@ -297,7 +349,7 @@ propertyOperationRouter.get("/:id", async (req: Request, res: Response) => {
 })
 
 propertyOperationRouter.patch("/sell-property/:id", async (req: Request, res: Response) => {
-  
+
 })
 
 propertyOperationRouter.patch("/approve-property/:id", async (req: Request, res: Response) => {
