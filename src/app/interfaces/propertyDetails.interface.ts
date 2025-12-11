@@ -8,7 +8,7 @@ export interface propertyDetails {
     lotSize : string,
     HOAFees : string,
     propertyDescription : string,
-    propertyOverviewVideoURL : string,
+    propertyOverviewVideoURLs : string[],
     interestRate : number,
     propertyOwner : {
         name : string,

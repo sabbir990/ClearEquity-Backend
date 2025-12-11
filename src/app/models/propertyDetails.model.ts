@@ -11,7 +11,7 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
     lotSize : {type : String, required : false},
     HOAFees : {type : String, required : [true, "HOA Fees is a required field!"]},
     propertyDescription : {type : String, required : [true, "Describing your property is required!"], trim : true},
-    propertyOverviewVideoURL : {type : String, required : [true, "An overview of the property is required!"]},
+    propertyOverviewVideoURLs : {type : [String], required : [true, "An overview of the property is required!"]},
     interestRate : {type: Number, required : [true, "Interest rate is required!"], default : 0.00},
     propertyOwner : {
         name : {type : String, required : [true, "Adding owner's name is required!"], trim : true},
