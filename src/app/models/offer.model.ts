@@ -7,6 +7,8 @@ const offerSchema : Schema<Offer> = new mongoose.Schema<Offer>({
     propertyCurrentPrice: {type: Number, required: true},
     buyerEmail: {type: String, required: true, lowercase: true},
     propertyOwnerEmail: {type: String, required: true, lowercase: true},
+    buyerName: {type: String, required: true},
+    propertyAddress: {type: String, required: true, trim: true},
     status: {type: String, required: true, lowercase: true, default: "pending"}
 })
 

@@ -8,6 +8,7 @@ import User from "../models/user.model";
 import PurchasedProperty from "../interfaces/purchasedProperty.interface";
 import mongoose from "mongoose";
 import Counter_Offer from "../models/counterOffer.model";
+import { ObjectId } from "mongodb";
 
 export const offerRouter = Router();
 
@@ -32,7 +33,16 @@ offerRouter.get("/", async (req: Request, res: Response) => {
 offerRouter.post("/send-an-offer", async (req: Request, res: Response) => {
     try {
         const offer = req.body;
-        const result = await Offers.insertOne(offer);
+        const user = await User.findOne({email : offer?.buyerEmail})
+        const property = await Property.findOne({_id : new ObjectId(offer?.propertyID)})
+
+        const offerObject = {
+            ...offer, buyerName: user?.username, propertyAddress: property?.propertyAddress
+        }
+        
+        const result = await Offers.insertOne(offerObject);
+
+        console.log(result)
 
         res.json({
             success: true,
@@ -188,7 +198,6 @@ offerRouter.post('/counter-offer', async (req: Request, res: Response) => {
             <div class="status-badge">Action Successful</div>
             <p class="greeting">Hello!</p>
             <p>Your counter-offer for <strong>Property ID: ${offer?.propertyID}</strong> has been successfully delivered to the buyer (${offer?.buyerEmail}).</p>
-            
             <div class="info-box">
                 <div class="data-row">
                     <span class="data-label">Original Listing:</span>
