@@ -34,7 +34,9 @@ userRouter.get("/users", async (req: Request, res: Response) => {
 
 userRouter.post("/register", async (req: Request, res: Response) => {
     try {
-        const { username, email, password, NDAStatus, status, role } = req.body;
+        const { username, email, password, NDAStatus, status, role, companyName, phone, market } = req.body;
+
+        console.log(req.body);
 
         const userExists = await User.findOne({ email: email });
 
@@ -48,7 +50,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 
         if (hashedPassword) {
             const registerableUserObject = {
-                username, email, password: hashedPassword, NDAStatus, lastLoggedIn: Date.now(), status
+                username, email, password: hashedPassword, NDAStatus, lastLoggedIn: Date.now(), status, companyName, phone, market
             }
 
             const result = await User.insertOne(registerableUserObject);
