@@ -36,8 +36,6 @@ userRouter.post("/register", async (req: Request, res: Response) => {
     try {
         const { username, email, password, NDAStatus, status, role, companyName, phone, market } = req.body;
 
-        console.log(req.body);
-
         const userExists = await User.findOne({ email: email });
 
         if (userExists) {
