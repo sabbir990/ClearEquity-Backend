@@ -33,16 +33,14 @@ offerRouter.get("/", async (req: Request, res: Response) => {
 offerRouter.post("/send-an-offer", async (req: Request, res: Response) => {
     try {
         const offer = req.body;
-        const user = await User.findOne({email : offer?.buyerEmail})
-        const property = await Property.findOne({_id : new ObjectId(offer?.propertyID)})
+        const user = await User.findOne({ email: offer?.buyerEmail })
+        const property = await Property.findOne({ _id: new ObjectId(offer?.propertyID) })
 
         const offerObject = {
             ...offer, buyerName: user?.username, propertyAddress: property?.propertyAddress
         }
-        
-        const result = await Offers.insertOne(offerObject);
 
-        console.log(result)
+        const result = await Offers.insertOne(offerObject);
 
         res.json({
             success: true,
@@ -64,7 +62,7 @@ offerRouter.delete('/delete-offer/:offerID', async (req: Request, res: Response)
 
         const result = await Offers.findByIdAndDelete(offerID);
 
-        console.log(result)
+
 
         res.status(201).json({
             success: true,
@@ -325,10 +323,12 @@ interface NewPropertyOwnerName {
 offerRouter.post("/buy-property", async (req: Request, res: Response) => {
     try {
         const boughtPropertyInfo = req.body;
+  
         const newPropertyOwnerName = await User.findOne({
-            customerEmail: boughtPropertyInfo?.customerEmail
+            email: boughtPropertyInfo?.customerEmail
         }) as NewPropertyOwnerName | null;
-        console.log(newPropertyOwnerName)
+
+   
         const result = await purchasedProperties.insertOne<PurchasedProperty>({ ...boughtPropertyInfo, customerUsername: newPropertyOwnerName?.username });
 
         res.json({
@@ -350,13 +350,10 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
         const purchaseID = req.params.purchaseID;
         const newOwnerInformation = req.body;
 
-        console.log(newOwnerInformation)
 
         const order = await purchasedProperties.findById(purchaseID);
 
         const orderedProperty = await Property.findOne({ _id: order?.propertyID });
-
-        // console.log(orderedProperty)
 
         const updatedDOC = {
             $set: {
@@ -371,7 +368,9 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
         }
 
         await purchasedProperties.findByIdAndUpdate(purchaseID, { $set: { status: "sold" } });
+
         const sellingResult = await Property.findByIdAndUpdate(orderedProperty?._id, updatedDOC);
+
 
         await sendEmail({
             to: newOwnerInformation.email || "support@clearquity.com",
@@ -384,12 +383,12 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
       </h2>
 
       <p style="font-size: 15px; color: #333;">
-          Hi <strong>{{buyerName}}</strong>,
+          Hi <strong>${newOwnerInformation?.name}</strong>,
       </p>
 
       <p style="font-size: 15px; color: #333; line-height: 1.6;">
           We’re excited to inform you that the owner of 
-          <strong>{{propertyName}}</strong> has officially agreed to sell the property to you!
+          <strong>${orderedProperty?.propertyName}</strong> has officially agreed to sell the property to you!
       </p>
 
       <p style="font-size: 15px; color: #333; line-height: 1.6;">
@@ -399,9 +398,9 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
       <div style="background: #f0f7ff; border-left: 4px solid #0066ff; padding: 12px 16px; margin: 20px 0; border-radius: 6px;">
           <p style="margin: 0; font-size: 14px; color: #0a2540;">
               <strong>New Owner Information:</strong><br>
-              Name: {{buyerName}}<br>
-              Email: {{buyerEmail}}<br>
-              Phone: {{buyerPhone}}
+              Name: ${newOwnerInformation?.name}<br>
+              Email: ${newOwnerInformation?.email}<br>
+              Phone: ${newOwnerInformation?.phone}
           </p>
       </div>
 
@@ -426,6 +425,107 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
             message: "Successfully Sold!",
             sellingResult
         })
+    } catch (err) {
+        res.json({
+            success: false,
+            message: "Something went wrong!",
+            error: err
+        })
+    }
+})
+
+offerRouter.patch("/reject-order/:orderId", async (req: Request, res: Response) => {
+    try {
+        const orderId = req.params.orderId;
+        const order = await purchasedProperties.findById(orderId);
+        const property = await Property.findOne({ _id: new ObjectId(order?.propertyID) });
+        const filter = { _id: new ObjectId(orderId) };
+        const updatedDOC = {
+            $set: {
+                status: "rejected"
+            }
+        }
+
+        const result = await purchasedProperties.updateOne(filter, updatedDOC);
+
+        if (!order || !order?.customerEmail) {
+            return {
+                success: false,
+                message: "Customer Email is not found!",
+            }
+        }
+
+        await sendEmail({
+            to: order.customerEmail,
+            subject: `The owner of the property ${property?.propertyName} has declined your purchasing proposal!`,
+            html: `
+<div style="background-color: #f3f4f6; padding: 40px 10px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+        
+        <div style="height: 6px; background-color: #126BA3;"></div>
+
+        <div style="padding: 32px 32px 10px 32px; text-align: center;">
+            <div style="font-size: 26px; font-weight: 800; color: #126BA3; letter-spacing: -1px; margin-bottom: 5px;">
+                ClearEquity<span style="color: #10b981;">.</span>
+            </div>
+            <div style="width: 40px; height: 1px; background-color: #e5e7eb; margin: 20px auto;"></div>
+        </div>
+
+        <div style="padding: 0 40px 40px 40px;">
+            <h2 style="color: #111827; font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 24px;">
+                Update on your proposal
+            </h2>
+            
+            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                Hello, <br><br>
+                Thank you for your interest in <strong>${property?.propertyName}</strong>. We appreciate the competitive offer you submitted through ClearEquity.
+            </p>
+
+            <div style="text-align: center; margin: 32px 0;">
+                <div style="display: inline-block; background-color: #fff1f2; border: 1px solid #ffe4e6; padding: 12px 24px; border-radius: 50px;">
+                    <span style="color: #e11d48; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
+                        ● Proposal Declined
+                    </span>
+                </div>
+            </div>
+
+            <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 32px; text-align: center;">
+                The property owner has reviewed all submissions and decided to move forward with another proposal. This decision is final but does not reflect on your eligibility for future listings.
+            </p>
+
+            <div style="text-align: center;">
+                <a href="https://clear-equity.vercel.app/listings" 
+                   style="background-color: #111827; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 15px; display: inline-block; transition: background-color 0.3s ease;">
+                   Explore Available Listings
+                </a>
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #f3f4f6; text-align: center;">
+                <p style="color: #9ca3af; font-size: 13px;">
+                    Questions? Reply to this email or visit our Help Center.
+                </p>
+            </div>
+        </div>
+
+        <div style="background-color: #fafafa; padding: 24px; text-align: center;">
+            <p style="font-size: 12px; color: #9ca3af; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
+                &copy; ${new Date().getFullYear()} ClearEquity Inc.
+            </p>
+            <div style="margin-top: 10px;">
+                <a href="#" style="color: #9ca3af; text-decoration: underline; font-size: 11px;">Unsubscribe</a>
+            </div>
+        </div>
+    </div>
+</div>
+`
+        })
+
+        res.json({
+            success: true,
+            message: "Successfully Rejected!",
+            result
+        })
+
     } catch (err) {
         res.json({
             success: false,

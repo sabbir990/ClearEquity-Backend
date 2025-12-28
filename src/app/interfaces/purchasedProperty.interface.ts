@@ -1,7 +1,7 @@
 interface PurchasedProperty {
     propertyID: string,
     customerEmail: string,
-    status: "pending" | "sold",
+    status: "pending" | "sold" | "rejected",
     customerUsername : string
 }
 
