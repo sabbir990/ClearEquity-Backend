@@ -10,7 +10,9 @@ const offerSchema : Schema<Offer> = new mongoose.Schema<Offer>({
     buyerName: {type: String, required: true},
     propertyAddress: {type: String, required: true, trim: true},
     status: {type: String, required: true, lowercase: true, default: "pending"}
-})
+}, {
+    timestamps: true
+});
 
 const Offers: Model<Offer> = mongoose.model<Offer>("Offers", offerSchema);
 

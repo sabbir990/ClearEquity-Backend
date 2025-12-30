@@ -323,12 +323,12 @@ interface NewPropertyOwnerName {
 offerRouter.post("/buy-property", async (req: Request, res: Response) => {
     try {
         const boughtPropertyInfo = req.body;
-  
+
         const newPropertyOwnerName = await User.findOne({
             email: boughtPropertyInfo?.customerEmail
         }) as NewPropertyOwnerName | null;
 
-   
+
         const result = await purchasedProperties.insertOne<PurchasedProperty>({ ...boughtPropertyInfo, customerUsername: newPropertyOwnerName?.username });
 
         res.json({
@@ -424,6 +424,25 @@ offerRouter.patch("/sell-property/:purchaseID", async (req: Request, res: Respon
             success: true,
             message: "Successfully Sold!",
             sellingResult
+        })
+    } catch (err) {
+        res.json({
+            success: false,
+            message: "Something went wrong!",
+            error: err
+        })
+    }
+})
+
+offerRouter.delete("/delete-purchase/:purchaseId", async (req: Request, res: Response) => {
+    try {
+        const purchaseId = req.params.purchaseId;
+        const result = await purchasedProperties.findByIdAndDelete(purchaseId);
+
+        res.json({
+            success: true,
+            message: "Successfully removed!",
+            result
         })
     } catch (err) {
         res.json({

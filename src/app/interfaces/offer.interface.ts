@@ -6,7 +6,7 @@ interface Offer{
     propertyOwnerEmail: string,
     buyerName: string,
     propertyAddress: string,
-    status: "pending" | "accepted" | "rejected" | "countered"
+    status: "pending" | "accepted" | "rejected" | "countered",
 }
 
 export default Offer;
