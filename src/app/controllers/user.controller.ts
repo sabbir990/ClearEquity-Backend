@@ -392,6 +392,25 @@ userRouter.post("/ask-for-support", async (req: Request, res: Response) => {
     }
 })
 
+userRouter.delete("/delete-feedback/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const result = await UserFeedback.findByIdAndDelete(id)
+
+        res.json({
+            success: true,
+            message: "Feedback delete successfully!",
+            result
+        })
+    } catch (err) {
+        res.json({
+            success: false,
+            message: "Something went wrong",
+            error: err
+        })
+    }
+})
+
 userRouter.get("/retrieve-feedbacks", async (req: Request, res: Response) => {
     try {
         const feedbacks = await UserFeedback.find();
