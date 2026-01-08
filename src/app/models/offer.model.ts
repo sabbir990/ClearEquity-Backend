@@ -9,6 +9,8 @@ const offerSchema : Schema<Offer> = new mongoose.Schema<Offer>({
     propertyOwnerEmail: {type: String, required: true, lowercase: true},
     buyerName: {type: String, required: true},
     propertyAddress: {type: String, required: true, trim: true},
+    minimumEMD: {type: Number, required: [true, "Minimum EMD is required"]},
+    sattlementDate: {type: String, required: [true, "Sattelment Date is required"]},
     status: {type: String, required: true, lowercase: true, default: "pending"}
 }, {
     timestamps: true

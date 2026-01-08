@@ -6,6 +6,8 @@ interface Offer{
     propertyOwnerEmail: string,
     buyerName: string,
     propertyAddress: string,
+    minimumEMD: number,
+    sattlementDate: string,
     status: "pending" | "accepted" | "rejected" | "countered",
 }
 
