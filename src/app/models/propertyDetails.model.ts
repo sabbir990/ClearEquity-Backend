@@ -29,6 +29,7 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
         kitchen : {type : Number, required : [true, "Kitchen number is required!"]},
         parking : {type: String, required : [true, "Parking information is required!"]},
     },
+    websiteURL: {type: String},
     country : {type : String, required : [true, "Property location country is required!"]},
     reno : {type: Number, required: [true, "Reno is required!"]},
     arv: {type: Number, required: [true, "ARV informations is required!"]}

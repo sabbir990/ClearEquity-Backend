@@ -26,6 +26,7 @@ export interface propertyDetails {
         sqrft : number,
         parking : boolean,
     },
+    websiteURL: string,
     country : string,
     reno : number,
     arv : number,
