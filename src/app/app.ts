@@ -4,7 +4,6 @@ import cors from 'cors';
 import { contactRouter } from "./controllers/contactForm.controller";
 import { propertyOperationRouter } from "./controllers/property.controller";
 import { offerRouter } from "./controllers/offer.controller";
-// import { cloudinaryRouter } from "./controllers/cloudinary.controller";
 
 const app : Application = express();
 

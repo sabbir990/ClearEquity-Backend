@@ -29,6 +29,8 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
         kitchen : {type : Number, required : [true, "Kitchen number is required!"]},
         parking : {type: String, required : [true, "Parking information is required!"]},
     },
+    latitude: {type: Number, required: [true, "latitude is required!"]},
+    longitude: {type: Number, required: [true, "longitude is required!"]},
     websiteURL: {type: String},
     country : {type : String, required : [true, "Property location country is required!"]},
     reno : {type: Number, required: [true, "Reno is required!"]},
