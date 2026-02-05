@@ -38,6 +38,6 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
     arv: {type: Number, required: [true, "ARV informations is required!"]}
 })
 
-const Property = mongoose.model("Property", propertyDetailsSchema);
+const Property = mongoose.model("Property", propertyDetailsSchema)
 
 export default Property;
