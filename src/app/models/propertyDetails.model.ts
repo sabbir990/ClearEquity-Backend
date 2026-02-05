@@ -31,6 +31,7 @@ const propertyDetailsSchema = new mongoose.Schema<propertyDetails>({
     },
     latitude: {type: Number, required: [true, "latitude is required!"]},
     longitude: {type: Number, required: [true, "longitude is required!"]},
+    comparativeURL: {type: String, required: [true, "comparativeURL is a required field!"]},
     websiteURL: {type: String},
     country : {type : String, required : [true, "Property location country is required!"]},
     reno : {type: Number, required: [true, "Reno is required!"]},

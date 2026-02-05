@@ -28,6 +28,7 @@ export interface propertyDetails {
     },
     latitude: number,
     longitude: number,
+    comparativeURL: string,
     websiteURL: string,
     country: string,
     reno: number,
