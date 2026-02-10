@@ -1,0 +1,29 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # This ensures it runs whenever you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to your project folder
+            cd /root/api-clear-equity  # <-- CHANGE THIS to your actual path
+            
+            # Pull the latest code
+            git pull origin main
+            
+            # Install any new dependencies
+            npm install --production
+            
+            # Restart the app using PM2
+            pm2 restart api-equity || pm2 start index.js --name "api-equity"
