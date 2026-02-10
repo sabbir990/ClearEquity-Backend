@@ -1,3 +1,13 @@
+export interface comparativeAddressDetails {
+    address: string,
+    price: number,
+    status: "sale" | "sold out",
+    beds: number,
+    baths: number,
+    size: number,
+    websiteURL: string,
+}
+
 export interface propertyDetails {
     propertyName: string,
     propertyAddress: string,
@@ -27,15 +37,14 @@ export interface propertyDetails {
         sqrft: number,
         parking: boolean,
     },
-    comparativeAddress: {
-        comparativeAddress1: string,
-        comparativeAddress2: string,
-        comparativeAddress3: string,
-        comparativeAddress4: string,
-    },
+    comparativeAddress: [
+        comparativeAddress1: comparativeAddressDetails,
+        comparativeAddress2: comparativeAddressDetails,
+        comparativeAddress3: comparativeAddressDetails,
+        comparativeAddress4: comparativeAddressDetails,
+    ],
     latitude: number,
     longitude: number,
-    websiteURL: string,
     country: string,
     reno: number,
     arv: number,
